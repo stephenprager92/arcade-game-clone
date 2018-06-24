@@ -41,6 +41,11 @@ class Player {
     // Handle input method. Uses key presses to call update function appropriately 
     handleInput(key) {
         switch (key) {
+            case 'up':
+            console.log("hi");
+
+            //DO THIS NEXT STEPHEN
+            //CALL THE UPDATE METHOD TO ADJUST MOVEMENT BASED ON A KEY PRESS USING THIS SWITCH
 
         }
     }
@@ -80,6 +85,22 @@ const enemy4 = new Enemy(boardX, boardY + blockHeight * (boardRows - 5)); // thi
 const enemy5 = new Enemy(boardX + blockWidth, boardY + blockHeight * (boardRows - 5)); // third row, 100px offscreen
 const allEnemies = [enemy1, enemy2, enemy3, enemy4, enemy5];
 
+
+// Prevent defaut arrow key action (page scrolling) on keydown
+document.addEventListener("keydown", function(e) {
+    
+    var allowedKeys = {
+        37: 'left',
+        38: 'up',
+        39: 'right',
+        40: 'down'
+    };
+
+    if (typeof allowedKeys[e.keyCode] !== undefined) {
+        e.preventDefault();
+    }
+});
+
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
@@ -89,6 +110,10 @@ document.addEventListener('keyup', function(e) {
         39: 'right',
         40: 'down'
     };
+
+    if (typeof allowedKeys[e.keyCode] !== undefined) {
+        e.preventDefault();
+    }
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
