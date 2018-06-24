@@ -1,9 +1,14 @@
 // Enemies our player must avoid
 class Enemy {
-    constructor() {
+    constructor(xPosition, yPosition) {
 
         // Variables applied to each of our instances go here,
         // we've provided one for you to get started
+
+        // X and Y position for enemy at instantiation
+        // Passed as parameters into constructor
+        this.x = xPosition;
+        this.y = yPosition;
 
         // The image/sprite for our enemies, this uses
         // a helper we've provided to easily load images
@@ -28,7 +33,16 @@ class Enemy {
 // This class requires an update(), render() and
 // a handleInput() method.
 class Player {
+    constructor(xPosition, yPosition) {
 
+        // X and Y position for player at instantiation
+        // Passed as parameters into constructor
+        this.x = xPosition;
+        this.y = yPosition;
+
+        // The image/sprite for our player
+        this.sprite = 'images/char-boy.png';
+    }
 }
 
 
