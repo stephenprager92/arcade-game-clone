@@ -1,23 +1,20 @@
-// Enemies our player must avoid
+// ENEMY CLASS. SETS PROPERTIES / METHODS FOR ENEMIES
 class Enemy {
+
+    // Constructor method - takes starting X / Y positions as parameters
     constructor(xPosition, yPosition) {
 
-        // Variables applied to each of our instances go here,
-        // we've provided one for you to get started
-
         // X and Y position for enemy at instantiation
-        // Passed as parameters into constructor
         this.x = xPosition;
         this.y = yPosition;
 
-        // The image/sprite for our enemies, this uses
-        // a helper we've provided to easily load images
+        // The image/sprite for our enemies
         this.sprite = 'images/enemy-bug.png';
     }
 
     // Update the enemy's position, required method for game
     // Parameter: dt, a time delta between ticks
-    update(dt) {
+    update(movement, dt) {
         // You should multiply any movement by the dt parameter, which will ensure the game runs at the same speed for all computers.
     }
 
@@ -27,14 +24,13 @@ class Enemy {
     }
 }
 
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
+// PLAYER CLASS. SETS PROPERTIES / METHODS FOR PLAYER
 class Player {
+
+    // Constructor method - takes starting X / Y positions as parameters
     constructor(xPosition, yPosition) {
 
         // X and Y position for player at instantiation
-        // Passed as parameters into constructor
         this.x = xPosition;
         this.y = yPosition;
 
@@ -42,9 +38,16 @@ class Player {
         this.sprite = 'images/char-boy.png';
     }
 
+    // Handle input method. Uses key presses to call update function appropriately 
+    handleInput(key) {
+        switch (key) {
+
+        }
+    }
+
     // Update the players's position, required method for game
     // Parameter: dt, a time delta between ticks
-    update(dt) {
+    update(movement, dt) {
         // Multiply any movement by the dt paramter, which will ensure the game runs at the same speed for all computers.
     }
 
@@ -76,12 +79,6 @@ const enemy3 = new Enemy(boardX, boardY + blockHeight * (boardRows - 4)); // sec
 const enemy4 = new Enemy(boardX, boardY + blockHeight * (boardRows - 5)); // third row, 100px offscreen
 const enemy5 = new Enemy(boardX + blockWidth, boardY + blockHeight * (boardRows - 5)); // third row, 100px offscreen
 const allEnemies = [enemy1, enemy2, enemy3, enemy4, enemy5];
-
-
-
-
-
-
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
