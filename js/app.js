@@ -14,7 +14,13 @@ class Enemy {
 
     // Update the enemy's position, required method for game
     // Parameter: dt, a time delta between ticks
-    update(movement, dt) {
+    update(dt) {
+        if (this.x > gameCanvasWidth) {
+            this.x = 0;
+        }
+        else {
+            this.x += blockWidth * dt;
+        }
         // You should multiply any movement by the dt parameter, which will ensure the game runs at the same speed for all computers.
     }
 
@@ -42,8 +48,24 @@ class Player {
     handleInput(key) {
         switch (key) {
             case 'up':
-            console.log("hi");
-
+                if (this.y > 0) {
+                    this.y -= blockHeight;
+                }
+               break;
+            case 'down':
+                if (this.y < gameCanvasHeight) {
+                    this.y += blockHeight;
+                }
+                break;
+            case 'left':
+                if (this.x > 0) {
+                    this.x -= blockWidth;
+                }
+                break;
+            case 'right':
+                if (this.x < gameCanvasWidth) {
+                    this.x += blockWidth;
+                }
             //DO THIS NEXT STEPHEN
             //CALL THE UPDATE METHOD TO ADJUST MOVEMENT BASED ON A KEY PRESS USING THIS SWITCH
 
@@ -52,7 +74,7 @@ class Player {
 
     // Update the players's position, required method for game
     // Parameter: dt, a time delta between ticks
-    update(movement, dt) {
+    update(movementX, movementY, dt) {
         // Multiply any movement by the dt paramter, which will ensure the game runs at the same speed for all computers.
     }
 
@@ -78,11 +100,11 @@ const blockWidth = 101; // Width of each board block
 const player = new Player(gameCanvasWidth / 2, gameCanvasHeight);
 
 // Enemy Objects / Array
-const enemy1 = new Enemy(boardX + blockWidth, boardY + blockHeight * (boardRows - 3)); // first row, 100px offscreen
+const enemy1 = new Enemy(boardX + blockWidth * 2, boardY + blockHeight * (boardRows - 3)); // first row, first column
 const enemy2 = new Enemy(boardX, boardY + blockHeight * (boardRows - 3)); // first row, 100px offscreen
-const enemy3 = new Enemy(boardX, boardY + blockHeight * (boardRows - 4)); // second row, 100px offscreen
+const enemy3 = new Enemy(boardX + blockWidth * 3, boardY + blockHeight * (boardRows - 4)); // second row, 100px offscreen
 const enemy4 = new Enemy(boardX, boardY + blockHeight * (boardRows - 5)); // third row, 100px offscreen
-const enemy5 = new Enemy(boardX + blockWidth, boardY + blockHeight * (boardRows - 5)); // third row, 100px offscreen
+const enemy5 = new Enemy(boardX + blockWidth * 2, boardY + blockHeight * (boardRows - 5)); // third row, 100px offscreen
 const allEnemies = [enemy1, enemy2, enemy3, enemy4, enemy5];
 
 
