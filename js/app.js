@@ -7,21 +7,25 @@ class Enemy {
         // X and Y position for enemy at instantiation
         this.x = xPosition;
         this.y = yPosition;
+        // Enemy speed (set randomly for each enemy for game variance)
+        this.speed = Math.random() + .05; // Add .05 to ensure it can't be 0 
 
         // The image/sprite for our enemies
         this.sprite = 'images/enemy-bug.png';
     }
 
     // Update the enemy's position, required method for game
-    // Parameter: dt, a time delta between ticks
+    // Parameter: dt, a time delta between ticks. 
     update(dt) {
+
+        // If enemy at end of board, reset
         if (this.x > gameCanvasWidth) {
             this.x = 0;
         }
         else {
-            this.x += blockWidth * dt;
+            // Movement multiplied by dt to ensure the game runs at the same speed for all computers.
+            this.x += blockWidth * this.speed * 1.5 * dt;
         }
-        // You should multiply any movement by the dt parameter, which will ensure the game runs at the same speed for all computers.
     }
 
     // Draw the enemy on the screen, required method for game
@@ -49,33 +53,31 @@ class Player {
         switch (key) {
             case 'up':
                 if (this.y > 0) {
-                    this.y -= blockHeight;
+                    this.update(0, -blockHeight);
                 }
                break;
             case 'down':
                 if (this.y < gameCanvasHeight) {
-                    this.y += blockHeight;
+                    this.update(0, blockHeight);
                 }
                 break;
             case 'left':
                 if (this.x > 0) {
-                    this.x -= blockWidth;
+                    this.update(-blockWidth, 0);
                 }
                 break;
             case 'right':
                 if (this.x < gameCanvasWidth) {
-                    this.x += blockWidth;
+                    this.update(blockWidth, 0);
                 }
-            //DO THIS NEXT STEPHEN
-            //CALL THE UPDATE METHOD TO ADJUST MOVEMENT BASED ON A KEY PRESS USING THIS SWITCH
-
         }
     }
 
     // Update the players's position, required method for game
-    // Parameter: dt, a time delta between ticks
-    update(movementX, movementY, dt) {
-        // Multiply any movement by the dt paramter, which will ensure the game runs at the same speed for all computers.
+    // This doesn't require dt since it is updated manually by player input
+    update(movementX = 0, movementY = 0) {
+        this.x += movementX;
+        this.y += movementY;
     }
 
     // Draw the player on the screen, required method for game
@@ -106,6 +108,8 @@ const enemy3 = new Enemy(boardX + blockWidth * 3, boardY + blockHeight * (boardR
 const enemy4 = new Enemy(boardX, boardY + blockHeight * (boardRows - 5)); // third row, 100px offscreen
 const enemy5 = new Enemy(boardX + blockWidth * 2, boardY + blockHeight * (boardRows - 5)); // third row, 100px offscreen
 const allEnemies = [enemy1, enemy2, enemy3, enemy4, enemy5];
+
+// Game score variables
 
 
 // Prevent defaut arrow key action (page scrolling) on keydown
