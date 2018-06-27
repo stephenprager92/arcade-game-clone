@@ -10,6 +10,10 @@ class Enemy {
         // Enemy speed (set randomly for each enemy for game variance)
         this.speed = Math.random() + .05; // Add .05 to ensure it can't be 0 
 
+        // Enemy height and width (used to check collisions)
+        this.height = blockHeight;
+        this.width = blockWidth;
+
         // The image/sprite for our enemies
         this.sprite = 'images/enemy-bug.png';
     }
@@ -44,6 +48,10 @@ class Player {
         this.x = xPosition;
         this.y = yPosition;
 
+        // height and width of player icon (used to check collisions)
+        this.height = blockHeight;
+        this.width = blockWidth;
+
         // The image/sprite for our player
         this.sprite = 'images/char-boy.png';
     }
@@ -73,11 +81,62 @@ class Player {
         }
     }
 
+    // CHECK ENEMY COLLISION
+    // Method used to identify whether or not player collided with enemy (returns true if so)
+    checkEnemyCollision() {
+
+        for (const enemy of allEnemies) {
+
+            // Check whether player boarder (including collision buffer) is within enemy border
+            if ((((player.x - collisionBuffer) > enemy.x && (player.x + collisionBuffer) < (enemy.x + enemy.width)) || 
+               ((player.x + player.width - collisionBuffer) > enemy.x && (player.x + player.width + collisionBuffer) < (enemy.x + enemy.width))) && 
+               (((player.y - collisionBuffer) > enemy.y && (player.y + collisionBuffer) < (enemy.y + enemy.height)) || 
+               ((player.y + player.height - collisionBuffer) > enemy.y && (player.y + player.height + collisionBuffer) < (enemy.y + enemy.height)))) {
+                console.log('collided enemy');
+                return true;
+            }
+        }
+        return false;
+    }
+
+    
+    // CHECK RIVER COLLISION
+    // Method used to identify whether or not player entered river and won game (returns true if so)
+    checkRiverCollision() {
+
+        // If we've reached the top (y = 0), we've hit the river
+        if (player.y < 0) {
+            return true;
+
+        }
+        return false;
+    }
+
     // Update the players's position, required method for game
     // This doesn't require dt since it is updated manually by player input
     update(movementX = 0, movementY = 0) {
+
+        // Check enemy collision. If collided, move back to default position and reduce score
+        if (this.checkEnemyCollision()) {
+            this.x = playerStartX;
+            this.y = playerStartY;
+            score -= lossScore;
+            updateScore();
+        }
+
+        // Check river collision (victory). If collided, move back to default position and increase score
+        if (this.checkRiverCollision()) {
+            this.x = playerStartX;
+            this.y = playerStartY;
+            score += victoryScore;
+            updateScore();
+        }
+
+        // Otherwise, update position
         this.x += movementX;
         this.y += movementY;
+
+
     }
 
     // Draw the player on the screen, required method for game
@@ -97,9 +156,12 @@ const boardRows = 5; // Rows of (traversable) board
 const boardColumns = 5; // Columns of (traversable) board
 const blockHeight = 83; // Height of each board block
 const blockWidth = 101; // Width of each board block
+const collisionBuffer = 5; // Collision buffer (pixels), adjust to increase "proximity" required for collision
 
 // Player Object
-const player = new Player(gameCanvasWidth / 2, gameCanvasHeight);
+const playerStartX = (gameCanvasWidth / 2);
+const playerStartY = gameCanvasHeight;
+const player = new Player(playerStartX, playerStartY);
 
 // Enemy Objects / Array
 const enemy1 = new Enemy(boardX + blockWidth * 2, boardY + blockHeight * (boardRows - 3)); // first row, first column
@@ -110,7 +172,9 @@ const enemy5 = new Enemy(boardX + blockWidth * 2, boardY + blockHeight * (boardR
 const allEnemies = [enemy1, enemy2, enemy3, enemy4, enemy5];
 
 // Game score variables
-
+let score = 0;
+const victoryScore = 500; // How many points you gain if you win
+const lossScore = 100; // How many points you lose if you die
 
 // Prevent defaut arrow key action (page scrolling) on keydown
 document.addEventListener("keydown", function(e) {
@@ -143,3 +207,9 @@ document.addEventListener('keyup', function(e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
+
+// UPDATE SCORE
+// Helper method used to update score HTML on page
+function updateScore() {
+
+}
