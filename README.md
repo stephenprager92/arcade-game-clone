@@ -26,7 +26,9 @@ Once all the above files have been loaded onto your computer, open index.html in
 
 To play the game, move the player icon (indicated by the boy sprite on the game canvas) to the river at the top of the screen. The player is controlled using the keyboard's arrow keys and can move in all four cardinal directions across the game board's frame. Reaching the river will award the player with 500 points and reset their position to the bottom for another attempt. Be careful not to make contact with bugs! Doing so will deduct 100 points from the player's score and reset the player icon to the bottom of the screen.
 
-Enemy speed is currently randomized, unique and changes slightly every 5 seconds for unpredictability. Enemy speed also increases gradually the more times the player wins the game.
+Enemy speed is currently randomized, unique and changes slightly every 5 seconds for unpredictability. 
+
+As the player continues to win the game, more enemies are added. Enemy speed also gradually increases.
 
 ## Other Contributors
 

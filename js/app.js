@@ -8,7 +8,7 @@ class Enemy {
         this.x = xPosition;
         this.y = yPosition;
         // Enemy speed (set randomly for each enemy for game variance)
-        this.speed = Math.max(.05, Math.random() + speedConstant); // Ensure speed is > 0 by setting a minimum of .05 
+        this.speed = Math.random() + speedConstant; // Ensure speed is > 0 by setting a minimum of .05 
 
         // Enemy height and width (used to check collisions)
         this.height = blockHeight;
@@ -28,11 +28,11 @@ class Enemy {
         }
         // If 5 seconds have passed, get a new speed to slightly adjust board state
         if (secondsAgo(currentTime) > 5) {
-            this.speed = Math.max(.05, Math.random() + speedConstant); 
+            this.speed = Math.random() + speedConstant; 
             currentTime = Math.floor((new Date().getTime() / 1000));
         }
         // Check enemy collision. If collided, move player back to default position and reduce score
-        if (player.checkEnemyCollision()) {
+        if (this.checkPlayerCollision()) {
             player.x = playerStartX;
             player.y = playerStartY;
             score -= lossScore;
@@ -42,6 +42,16 @@ class Enemy {
             // Movement multiplied by dt to ensure the game runs at the same speed for all computers.
             this.x += blockWidth * this.speed * 1.5 * dt;
         }
+    }
+
+    // CHECK PLAYER COLLISION
+    // Method used to identify whether or not enemy collided with player (returns true if so)
+    checkPlayerCollision() {
+        if (this.x + collisionBuffer < player.x + player.width && this.x + this.width - collisionBuffer > player.x && this.y + collisionBuffer < player.y + player.height && this.height + this.y - collisionBuffer > player.y) {
+            console.log("collided enemy");
+            return true;
+        }
+        return false;
     }
 
     // Draw the enemy on the screen, required method for game
@@ -92,25 +102,6 @@ class Player {
                 }
         }
     }
-
-    // CHECK ENEMY COLLISION
-    // Method used to identify whether or not player collided with enemy (returns true if so)
-    checkEnemyCollision() {
-
-        for (const enemy of allEnemies) {
-
-            // Check whether player boarder (including collision buffer) is within enemy border
-            if ((((player.x - collisionBuffer) > enemy.x && (player.x + collisionBuffer) < (enemy.x + enemy.width)) || 
-               ((player.x + player.width - collisionBuffer) > enemy.x && (player.x + player.width + collisionBuffer) < (enemy.x + enemy.width))) && 
-               (((player.y - collisionBuffer) > enemy.y && (player.y + collisionBuffer) < (enemy.y + enemy.height)) || 
-               ((player.y + player.height - collisionBuffer) > enemy.y && (player.y + player.height + collisionBuffer) < (enemy.y + enemy.height)))) {
-                console.log('collided enemy');
-                return true;
-            }
-        }
-        return false;
-    }
-
     
     // CHECK RIVER COLLISION
     // Method used to identify whether or not player entered river and won game (returns true if so)
@@ -129,27 +120,21 @@ class Player {
     // This doesn't require dt since it is updated manually by player input
     update(movementX = 0, movementY = 0) {
 
-        // Check enemy collision. If collided, move back to default position and reduce score
-        if (this.checkEnemyCollision()) {
-            this.x = playerStartX;
-            this.y = playerStartY;
-            score -= lossScore;
-            updateScore();
-        }
-
-        // Check river collision (victory). If collided, move back to default position and increase score
+        // Check river collision (victory). 
+        // If collided, move back to default position and increase score / speed
         if (this.checkRiverCollision()) {
             this.x = playerStartX;
             this.y = playerStartY;
             score += victoryScore;
             speedConstant += 0.1;
             updateScore();
+            // Instantiate a new random enemy between board rows 3 & 5 (tile spaces)
+            allEnemies.push(new Enemy(boardX, boardY + blockHeight * (boardRows - Math.floor(Math.random() * ((boardRows - 3) + 1) + 3))));
         }
 
         // Otherwise, update position
         this.x += movementX;
         this.y += movementY;
-
 
     }
 
@@ -170,14 +155,14 @@ const boardRows = 5; // Rows of (traversable) board
 const boardColumns = 5; // Columns of (traversable) board
 const blockHeight = 83; // Height of each board block
 const blockWidth = 101; // Width of each board block
-const collisionBuffer = 5; // Collision buffer (pixels), adjust to increase "proximity" required for collision.
+const collisionBuffer = 20; // Collision buffer (pixels), adjust to increase "proximity" required for collision.
 
 // Game score variables
 let score = 0;
 const victoryScore = 500; // How many points you gain if you win
 const lossScore = 100; // How many points you lose if you die
 let currentTime = Math.floor((new Date().getTime() / 1000)); // Current time (used to update game)
-let speedConstant = .01; // speed addition to enemy movement (increases with difficulty)
+let speedConstant = 0.7; // speed addition to enemy movement (increases with difficulty)
 
 // Player Object
 const playerStartX = (gameCanvasWidth / 2);
@@ -185,12 +170,9 @@ const playerStartY = gameCanvasHeight;
 const player = new Player(playerStartX, playerStartY);
 
 // Enemy Objects / Array
-const enemy1 = new Enemy(boardX + blockWidth * 2, boardY + blockHeight * (boardRows - 3)); // first row, first column
-const enemy2 = new Enemy(boardX, boardY + blockHeight * (boardRows - 3)); // first row, 100px offscreen
-const enemy3 = new Enemy(boardX + blockWidth * 3, boardY + blockHeight * (boardRows - 4)); // second row, 100px offscreen
-const enemy4 = new Enemy(boardX, boardY + blockHeight * (boardRows - 5)); // third row, 100px offscreen
-const enemy5 = new Enemy(boardX + blockWidth * 2, boardY + blockHeight * (boardRows - 5)); // third row, 100px offscreen
-const allEnemies = [enemy1, enemy2, enemy3, enemy4, enemy5];
+const allEnemies = []; // Holds all current enemies
+const enemy1 = new Enemy(boardX + blockWidth * 2, boardY + blockHeight * (boardRows - 3)); // first row, first column (default enemy)
+allEnemies.push(enemy1);
 
 // Prevent defaut arrow key action (page scrolling) on keydown
 document.addEventListener("keydown", function(e) {
@@ -232,8 +214,7 @@ function updateScore() {
 }
 
 // EVALUATE PASSED TIME (SECONDS)
-// Used to change speed of enemy if board in static (unpassable) state
-
+// Helper method used to change speed of enemy if board in static state
 // Structure taken from https://stackoverflow.com/questions/14696538/javascript-for-how-many-seconds-have-passed-since-this-timestamp
 function secondsAgo(time) {
     return Math.floor((new Date().getTime() / 1000)) - time;
