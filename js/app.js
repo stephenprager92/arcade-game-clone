@@ -26,6 +26,11 @@ class Enemy {
         if (this.x > gameCanvasWidth) {
             this.x = 0;
         }
+        // If 10 seconds have passed, get a new speed to adjust board state
+        if (secondsAgo(currentTime) > 10) {
+            this.speed = Math.random() + .05;
+            currentTime = new Date().getTime();
+        }
         else {
             // Movement multiplied by dt to ensure the game runs at the same speed for all computers.
             this.x += blockWidth * this.speed * 1.5 * dt;
@@ -175,6 +180,7 @@ const allEnemies = [enemy1, enemy2, enemy3, enemy4, enemy5];
 let score = 0;
 const victoryScore = 500; // How many points you gain if you win
 const lossScore = 100; // How many points you lose if you die
+let currentTime = new Date().getTime(); // Current time (used to update game)
 
 // Prevent defaut arrow key action (page scrolling) on keydown
 document.addEventListener("keydown", function(e) {
@@ -212,4 +218,12 @@ document.addEventListener('keyup', function(e) {
 // Helper method used to update score HTML on page
 function updateScore() {
 
+}
+
+// EVALUATE PASSED TIME (SECONDS)
+// Used to change speed of enemy if board in static (unpassable) state
+
+// Structure taken from https://stackoverflow.com/questions/14696538/javascript-for-how-many-seconds-have-passed-since-this-timestamp
+function secondsAgo(time) {
+    return Math.round((currentTime / 1000)) - time;
 }
