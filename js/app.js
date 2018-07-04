@@ -54,7 +54,6 @@ class Enemy {
     checkPlayerCollision() {
         if (this.x + collisionBuffer < player.x + player.width && this.x + this.width - collisionBuffer > player.x 
             && this.y + collisionBuffer < player.y + player.height && this.height + this.y - collisionBuffer > player.y) {
-            console.log("collided enemy");
             return true;
         }
         return false;
