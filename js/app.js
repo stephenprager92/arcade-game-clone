@@ -31,6 +31,13 @@ class Enemy {
             this.speed = Math.random() + .05;
             currentTime = new Date().getTime();
         }
+        // Check enemy collision. If collided, move player back to default position and reduce score
+        if (player.checkEnemyCollision()) {
+            player.x = playerStartX;
+            player.y = playerStartY;
+            score -= lossScore;
+            updateScore();
+        }
         else {
             // Movement multiplied by dt to ensure the game runs at the same speed for all computers.
             this.x += blockWidth * this.speed * 1.5 * dt;
@@ -161,7 +168,7 @@ const boardRows = 5; // Rows of (traversable) board
 const boardColumns = 5; // Columns of (traversable) board
 const blockHeight = 83; // Height of each board block
 const blockWidth = 101; // Width of each board block
-const collisionBuffer = 5; // Collision buffer (pixels), adjust to increase "proximity" required for collision
+const collisionBuffer = 0; // Collision buffer (pixels), adjust to increase "proximity" required for collision
 
 // Player Object
 const playerStartX = (gameCanvasWidth / 2);
@@ -217,7 +224,8 @@ document.addEventListener('keyup', function(e) {
 // UPDATE SCORE
 // Helper method used to update score HTML on page
 function updateScore() {
-
+    const scoreText = document.querySelector('.score');
+    scoreText.textContent = score;
 }
 
 // EVALUATE PASSED TIME (SECONDS)
