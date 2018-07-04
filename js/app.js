@@ -27,9 +27,10 @@ class Enemy {
             this.x = 0;
         }
         // If 10 seconds have passed, get a new speed to adjust board state
-        if (secondsAgo(currentTime) > 10) {
+        if (secondsAgo(currentTime) > 5) {
             this.speed = Math.random() + .05;
             currentTime = new Date().getTime();
+            console.log(this.speed);
         }
         // Check enemy collision. If collided, move player back to default position and reduce score
         if (player.checkEnemyCollision()) {
@@ -233,5 +234,5 @@ function updateScore() {
 
 // Structure taken from https://stackoverflow.com/questions/14696538/javascript-for-how-many-seconds-have-passed-since-this-timestamp
 function secondsAgo(time) {
-    return Math.round((currentTime / 1000)) - time;
+    return Math.round((new Date().getTime() / 1000)) - time;
 }

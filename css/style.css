@@ -1,3 +1,8 @@
+/* Start at 80% zoom (for full visibility) */
+html {
+	transform(scale, 0.8);
+}
+
 body {
     text-align: center;
 }
@@ -7,9 +12,11 @@ body {
 .instructions {
 	margin: auto;
 	text-align: center;
+	font-size: 20px;
 	width: 75%;
 }
 .scoreboard {
+	font-size: 22px;
 	font-weight: bold;
 	margin-top: 25px;
 	margin-bottom: 0;
