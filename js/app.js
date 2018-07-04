@@ -8,7 +8,7 @@ class Enemy {
         this.x = xPosition;
         this.y = yPosition;
         // Enemy speed (set randomly for each enemy for game variance)
-        this.speed = Math.random() + .05; // Add .05 to ensure it can't be 0 
+        this.speed = Math.max(.05, Math.random() + speedConstant); // Ensure speed is > 0 by setting a minimum of .05 
 
         // Enemy height and width (used to check collisions)
         this.height = blockHeight;
@@ -26,11 +26,10 @@ class Enemy {
         if (this.x > gameCanvasWidth) {
             this.x = 0;
         }
-        // If 10 seconds have passed, get a new speed to adjust board state
+        // If 5 seconds have passed, get a new speed to slightly adjust board state
         if (secondsAgo(currentTime) > 5) {
-            this.speed = Math.random() + .05;
-            currentTime = new Date().getTime();
-            console.log(this.speed);
+            this.speed = Math.max(.05, Math.random() + speedConstant); 
+            currentTime = Math.floor((new Date().getTime() / 1000));
         }
         // Check enemy collision. If collided, move player back to default position and reduce score
         if (player.checkEnemyCollision()) {
@@ -119,6 +118,7 @@ class Player {
 
         // If we've reached the top (y = 0), we've hit the river
         if (player.y < 0) {
+            alert("Congratulations! You've reached the river!");
             return true;
 
         }
@@ -142,6 +142,7 @@ class Player {
             this.x = playerStartX;
             this.y = playerStartY;
             score += victoryScore;
+            speedConstant += 0.1;
             updateScore();
         }
 
@@ -169,7 +170,14 @@ const boardRows = 5; // Rows of (traversable) board
 const boardColumns = 5; // Columns of (traversable) board
 const blockHeight = 83; // Height of each board block
 const blockWidth = 101; // Width of each board block
-const collisionBuffer = 0; // Collision buffer (pixels), adjust to increase "proximity" required for collision
+const collisionBuffer = 5; // Collision buffer (pixels), adjust to increase "proximity" required for collision.
+
+// Game score variables
+let score = 0;
+const victoryScore = 500; // How many points you gain if you win
+const lossScore = 100; // How many points you lose if you die
+let currentTime = Math.floor((new Date().getTime() / 1000)); // Current time (used to update game)
+let speedConstant = .01; // speed addition to enemy movement (increases with difficulty)
 
 // Player Object
 const playerStartX = (gameCanvasWidth / 2);
@@ -183,12 +191,6 @@ const enemy3 = new Enemy(boardX + blockWidth * 3, boardY + blockHeight * (boardR
 const enemy4 = new Enemy(boardX, boardY + blockHeight * (boardRows - 5)); // third row, 100px offscreen
 const enemy5 = new Enemy(boardX + blockWidth * 2, boardY + blockHeight * (boardRows - 5)); // third row, 100px offscreen
 const allEnemies = [enemy1, enemy2, enemy3, enemy4, enemy5];
-
-// Game score variables
-let score = 0;
-const victoryScore = 500; // How many points you gain if you win
-const lossScore = 100; // How many points you lose if you die
-let currentTime = new Date().getTime(); // Current time (used to update game)
 
 // Prevent defaut arrow key action (page scrolling) on keydown
 document.addEventListener("keydown", function(e) {
@@ -234,5 +236,5 @@ function updateScore() {
 
 // Structure taken from https://stackoverflow.com/questions/14696538/javascript-for-how-many-seconds-have-passed-since-this-timestamp
 function secondsAgo(time) {
-    return Math.round((new Date().getTime() / 1000)) - time;
+    return Math.floor((new Date().getTime() / 1000)) - time;
 }
