@@ -1,3 +1,12 @@
+/* 
+
+App.JS
+Implements enemy and player classes for game interface
+
+*/
+"use strict";
+
+
 // ENEMY CLASS. SETS PROPERTIES / METHODS FOR ENEMIES
 class Enemy {
 
