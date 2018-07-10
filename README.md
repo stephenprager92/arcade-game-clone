@@ -22,7 +22,7 @@ To run this game on your browser, you'll need to download the following files (a
 4. images 
    * All included .png files (needed to load the game board and sprites). Some images are currently not used in the game, but this may change in later iterations
 
-Once all the above files have been loaded onto your computer, open index.html in a web browser of your choice and you'll be ready to get started.
+Once all the above files have been loaded onto your computer, open index.html in a web browser of your choice and you'll be ready to get started. Note that the browser must support ES6 (due to usage of the 'class' keyword). If your browser does not support the ES6 features in this game, you can use a JS transpiler Babel (https://babeljs.io/) to transpile the code to ES5.
 
 To play the game, move the player icon (indicated by the boy sprite on the game canvas) to the river at the top of the screen. The player is controlled using the keyboard's arrow keys and can move in all four cardinal directions across the game board's frame. Reaching the river will award the player with 500 points and reset their position to the bottom for another attempt. Be careful not to make contact with bugs! Doing so will deduct 100 points from the player's score and reset the player icon to the bottom of the screen.
 
